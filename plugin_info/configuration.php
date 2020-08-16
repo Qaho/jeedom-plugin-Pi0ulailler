@@ -25,18 +25,18 @@ if (!isConnect()) {
 <form class="form-horizontal">
     <fieldset>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Global param 1}}</label>
+            <label class="col-lg-4 control-label">{{Adresse du Pi0ulailler}}</label>
             <div class="col-lg-2">
-                <input class="configKey form-control" data-l1key="param1" />
+                <input class="configKey form-control" data-l1key="ip" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Global param 2}}</label>
+            <label class="col-lg-4 control-label">{{Port}}</label>
             <div class="col-lg-2">
-                <input class="configKey form-control" data-l1key="param2" value="80" />
+                <input class="configKey form-control" data-l1key="port" value="80" />
             </div>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label class="col-lg-4 control-label">{{Global param 2}}</label>
             <div class="col-lg-2">
                 <select class="configKey form-control" data-l1key="param3">
@@ -44,7 +44,7 @@ if (!isConnect()) {
                     <option value="value2">value2</option>
                 </select>
             </div>
-        </div>
+        </div> -->
   </fieldset>
 </form>
 
