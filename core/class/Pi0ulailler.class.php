@@ -19,7 +19,7 @@
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-class template extends eqLogic {
+class Pi0ulailler extends eqLogic {
     /*     * *************************Attributs****************************** */
 
 
@@ -106,7 +106,7 @@ class template extends eqLogic {
     /*     * **********************Getteur Setteur*************************** */
 }
 
-class templateCmd extends cmd {
+class Pi0ulaillerCmd extends cmd {
     /*     * *************************Attributs****************************** */
 
 
