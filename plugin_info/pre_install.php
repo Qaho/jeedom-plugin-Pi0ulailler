@@ -18,19 +18,9 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-// Fonction exécutée automatiquement après l'installation du plugin
-  function pi0ulailler_install() {
+// Fonction exécutée automatiquement avant la mise à jour du plugin
+  function template_pre_update() {
 
   }
-
-// Fonction exécutée automatiquement après la mise à jour du plugin
-  function pi0ulailler_update() {
-
-  }
-
-// Fonction exécutée automatiquement après la suppression du plugin
-  function pi0ulailler_remove() {
-
-  }
-
+  
 ?>

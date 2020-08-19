@@ -2,7 +2,7 @@
 if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
-$plugin = plugin::byId('Pi0ulailler');
+$plugin = plugin::byId('pi0ulailler');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 ?>
@@ -22,10 +22,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
     <span>{{Configuration}}</span>
   </div>
   </div>
-  <legend><i class="fas fa-table"></i> {{Mes Pi0ulailler}}</legend>
+  <legend><i class="fas fa-table"></i> {{Mes pi0ulaillers}}</legend>
 	   <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
 <div class="eqLogicThumbnailContainer">
     <?php
+// Affiche la liste des équipements
 foreach ($eqLogics as $eqLogic) {
 	$opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
 	echo '<div class="eqLogicDisplayCard cursor '.$opacity.'" data-eqLogic_id="' . $eqLogic->getId() . '">';
@@ -55,7 +56,7 @@ foreach ($eqLogics as $eqLogic) {
     <form class="form-horizontal">
         <fieldset>
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{Nom de l'équipement Pi0ulailler}}</label>
+                <label class="col-sm-3 control-label">{{Nom de l'équipement template}}</label>
                 <div class="col-sm-3">
                     <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
                     <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement template}}"/>
@@ -94,7 +95,7 @@ foreach (jeeObject::all() as $object) {
 		</div>
 	</div>
        <div class="form-group">
-        <label class="col-sm-3 control-label">{{Pi0ulailler param 1}}</label>
+        <label class="col-sm-3 control-label">{{Paramètres}}</label>
         <div class="col-sm-3">
             <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="city" placeholder="param1"/>
         </div>
@@ -112,12 +113,15 @@ foreach (jeeObject::all() as $object) {
     </thead>
     <tbody>
     </tbody>
-</table>
+</table> 
+</table> 
 </div>
 </div>
 
 </div>
 </div>
 
-<?php include_file('desktop', 'Pi0ulailler', 'js', 'template');?>
-<?php include_file('core', 'plugin.Pi0ulailler', 'js');?>
+<!-- Inclusion du fichier javascript du plugin (dossier, nom_du_fichier, extension_du_fichier, nom_du_plugin) -->
+<?php include_file('desktop', 'pi0ulailler', 'js', 'pi0ulailler');?>
+<!-- Inclusion du fichier javascript du core - NE PAS MODIFIER NI SUPPRIMER -->
+<?php include_file('core', 'plugin.template', 'js');?> 

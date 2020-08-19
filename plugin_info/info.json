@@ -1,5 +1,5 @@
 {
-	"id" : "Pi0ulailler",
+	"id" : "pi0ulailler",
 	"name" : "Pi0ulailler",
 	"description" : "Plugin pour la gestion d'un Pi0ulailler",
 	"licence" : "AGPL",
@@ -7,8 +7,6 @@
 	"require" : "3.2",
 	"version" : "0.1.0",
 	"category" : "nature",
-	"display" : "",
-	"mobile" : "",
 	"hasDependency" : false,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
@@ -18,6 +16,6 @@
 		"forum":"Lien vers le forum",
 		"video" : "Lien vers une video"
 	},
-	"language" : ["fr_FR","en_US","de_DE","sp_SP","ru_RU","id_ID","it_IT"],
+	"language" : ["fr_FR","en_US","de_DE","sp_SP"],
 	"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile"]
 }
