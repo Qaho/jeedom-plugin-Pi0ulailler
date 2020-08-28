@@ -103,7 +103,16 @@ class pi0ulailler extends eqLogic {
 
  // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement 
     public function postSave() {
-        
+      $info = $this->getCmd(null, 'rain');
+		if (!is_object($info)) {
+			$info = new pi0ulaillerCmd();
+			$info->setName(__('Pluie', __FILE__));
+		}
+		$info->setLogicalId('rain');
+		$info->setEqLogic_id($this->getId());
+		$info->setType('info');
+		$info->setSubType('string');
+		$info->save();	
     }
 
  // Fonction exécutée automatiquement avant la suppression de l'équipement 
