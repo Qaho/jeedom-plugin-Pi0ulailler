@@ -196,7 +196,7 @@ class pi0ulailler extends eqLogic
      */
 
    /*     * **********************Getteur Setteur*************************** */
-   public function getRainData() {
+   public function updateRainData() {
       $result = $this->makeRequest('rain', null);
 
       if($result) {
@@ -206,11 +206,11 @@ class pi0ulailler extends eqLogic
       
    }
 
-   public function getChickenCoopData() {
+   public function updateChickenCoopData() {
       $this->makeRequest(null, null);
    }
 
-   public function getData() {
+   public function updateData() {
       $this->getRainData();
       $this->getChickenCoopData();
    }
@@ -260,11 +260,15 @@ class pi0ulaillerCmd extends cmd
    public function execute($_options = array())
    {
       $eqlogic = $this->getEqLogic(); // récupère l'éqlogic de la commande $this
+      log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command: ' . $this->getLogicalId());
+
 		switch ($this->getLogicalId()) {	// vérifie le logicalid de la commande 			
 			case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
-				$info = $eqlogic->randomVdm(); //On lance la fonction randomVdm() pour récupérer une vdm et on la stocke dans la variable $info
-				$eqlogic->checkAndUpdateCmd('story', $info); // on met à jour la commande avec le LogicalId "story"  de l'eqlogic 
-				break;
+				$info = $eqlogic->updateData(); 
+            break;
+         case 'rain': 
+               $info = $eqlogic->updateRainData(); 
+               break;
 		}
    }
    
