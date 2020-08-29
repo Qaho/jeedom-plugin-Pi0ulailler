@@ -208,45 +208,45 @@ class pi0ulailler extends eqLogic
      */
 
    /*     * **********************Getteur Setteur*************************** */
-   public function updateRainData() {
-      $result = $this->makeRequest('rain', null);
+   // public function updateRainData() {
+   //    $result = $this->makeRequest('rain', null);
 
-      if($result) {
-         $this->getEqLogic()->checkAndUpdateCmd('rain', $result->rain_mm_value);
-      }
+   //    if($result) {
+   //       $this->getEqLogic()->checkAndUpdateCmd('rain', $result->rain_mm_value);
+   //    }
 
       
-   }
+   // }
 
-   public function updateChickenCoopData() {
-      $this->makeRequest(null, null);
-   }
+   // public function updateChickenCoopData() {
+   //    $this->makeRequest(null, null);
+   // }
 
-   public function updateData() {
-      $this->getRainData();
-      $this->getChickenCoopData();
-   }
+   // public function updateData() {
+   //    $this->getRainData();
+   //    $this->getChickenCoopData();
+   // }
 
-   public function makeRequest($subEquip, $cmd) {
+   // public function makeRequest($subEquip, $cmd) {
 
-      if(!empty($subEquip)) {
-         $url = 'http://' . $this->getConfiguration('addressip') . '/getdata';
-      }
-      else {
-         $url = 'http://' . $this->getConfiguration('addressip') . '/' . $subEquip . '/getdata';
-      }
+   //    if(!empty($subEquip)) {
+   //       $url = 'http://' . $this->getConfiguration('addressip') . '/getdata';
+   //    }
+   //    else {
+   //       $url = 'http://' . $this->getConfiguration('addressip') . '/' . $subEquip . '/getdata';
+   //    }
 		
-		log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. $url);
-		$request_http = new com_http($url);
-		$return = $request_http->exec(10, 5);
-		$return = json_decode($return);
-		if($return->Info->RSP != 'OK') {
-			log::add('pi0ulailler', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. ' réponse erreur ' . $cmd);
-			return false;
-		} else {
-			return $return;
-		}
-	}
+	// 	log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. $url);
+	// 	$request_http = new com_http($url);
+	// 	$return = $request_http->exec(10, 5);
+	// 	$return = json_decode($return);
+	// 	if($return->Info->RSP != 'OK') {
+	// 		log::add('pi0ulailler', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. ' réponse erreur ' . $cmd);
+	// 		return false;
+	// 	} else {
+	// 		return $return;
+	// 	}
+	// }
 }
 
 class pi0ulaillerCmd extends cmd
@@ -276,10 +276,10 @@ class pi0ulaillerCmd extends cmd
 
 		switch ($this->getLogicalId()) {	// vérifie le logicalid de la commande 			
 			case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
-				$info = $eqlogic->updateData(); 
+				// $info = $eqlogic->updateData(); 
             break;
          case 'rain': 
-            $info = $eqlogic->updateRainData(); 
+            // $info = $eqlogic->updateRainData(); 
             break;
 		}
    }
