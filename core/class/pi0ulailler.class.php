@@ -227,24 +227,27 @@ class pi0ulailler extends eqLogic
 
    public function makeRequest($category, $cmd) {
 
-      log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. json_encode($this->getConfiguration('adressip')));
+      log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. json_encode($this->getConfiguration()));
 
-      if(!empty($category)) {
-         $url = 'http://' . $this->getConfiguration('addressip') . '/getdata';
-      }
-      else {
-         $url = 'http://' . $this->getConfiguration('addressip') . '/' . $category . '/getdata';
-      }
+      // get config ip address
+      $url = 'http://' . $this->getConfiguration('ipAddress')
+
+      // add port 
+      if(!empty($this->getConfiguration('port'))) $url .= ':' . $this->getConfiguration('port');
+      // add category
+      if(!empty($category)) $url .= '/' . $category;
+      
+      $url .= '/getdata';
 		
-		log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. $url);
+		log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Get URL: '. $url);
 		$request_http = new com_http($url);
 		$return = $request_http->exec(10, 5);
 		$return = json_decode($return);
 		if($return->Info->RSP != 'OK') {
-			log::add('pi0ulailler', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. ' réponse erreur ' . $cmd);
+			log::add('pi0ulailler', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. 'Response error: ' . $cmd);
 			return false;
 		} else {
-         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Result '. json_encode($return));
+         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Result: '. json_encode($return));
 			return $return;
 		}
 	}
