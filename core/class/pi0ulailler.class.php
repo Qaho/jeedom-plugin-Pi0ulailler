@@ -242,14 +242,9 @@ class pi0ulailler extends eqLogic
 		log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Get URL: '. $url);
 		$request_http = new com_http($url);
 		$return = $request_http->exec(10, 5);
-		$return = json_decode($return);
-		if($return->Info->RSP != 'OK') {
-			log::add('pi0ulailler', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. 'Response error: ' . $cmd);
-			return false;
-		} else {
-         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Result: '. json_encode($return));
-			return $return;
-		}
+      $return = json_decode($return);
+      log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Result: '. json_encode($return));
+      return $return;
 	}
 }
 
