@@ -271,17 +271,17 @@ class pi0ulaillerCmd extends cmd
    // Exécution d'une commande  
    public function execute($_options = array())
    {
-      $eqlogic = $this->getEqLogic(); // récupère l'éqlogic de la commande $this
-      log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command: ' . $eqlogic);
+      // $eqlogic = $this->getEqLogic(); // récupère l'éqlogic de la commande $this
+      log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command: ' . $_options);
 
-		switch ($this->getLogicalId()) {	// vérifie le logicalid de la commande 			
-			case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
-				// $info = $eqlogic->updateData(); 
-            break;
-         case 'rain': 
-            // $info = $eqlogic->updateRainData(); 
-            break;
-		}
+		// switch ($this->getLogicalId()) {	// vérifie le logicalid de la commande 			
+		// 	case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
+		// 		// $info = $eqlogic->updateData(); 
+      //       break;
+      //    case 'rain': 
+      //       // $info = $eqlogic->updateRainData(); 
+      //       break;
+		// }
    }
    
 
