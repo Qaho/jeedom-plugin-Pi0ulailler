@@ -221,8 +221,8 @@ class pi0ulailler extends eqLogic
    }
 
    public function updateData() {
-      $this->getRainData();
-      $this->getChickenCoopData();
+      $this->updateRainData();
+      $this->updateChickenCoopData();
    }
 
    public function makeRequest($category, $cmd) {
@@ -278,10 +278,10 @@ class pi0ulaillerCmd extends cmd
 
 		switch ($cmd) {	// vérifie le logicalid de la commande 			
 			case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
-				$info = $eqlogic->updateData(); 
+				$eqlogic->updateData(); 
             break;
          case 'rain': 
-            $info = $eqlogic->updateRainData(); 
+            $eqlogic->updateRainData(); 
             break;
 		}
    }
