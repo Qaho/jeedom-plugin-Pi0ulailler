@@ -230,7 +230,7 @@ class pi0ulailler extends eqLogic
       log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. json_encode($this->getConfiguration()));
 
       // get config ip address
-      $url = 'http://' . $this->getConfiguration('ipAddress')
+      $url = 'http://' . $this->getConfiguration('ipAddress');
 
       // add port 
       if(!empty($this->getConfiguration('port'))) $url .= ':' . $this->getConfiguration('port');
