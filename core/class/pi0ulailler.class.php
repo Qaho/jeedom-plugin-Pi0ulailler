@@ -132,50 +132,50 @@ class pi0ulailler extends eqLogic
 
       //================== chickencoop
       // opening time
-      // $info = $this->getCmd(null, 'openingTime');
-      // if (!is_object($info)) {
-      //    $info = new pi0ulaillerCmd();
-      //    $info->setName(__('Heure ouverture', __FILE__));
-      // }
-      // $info->setLogicalId('openingTime');
-      // $info->setEqLogic_id($this->getId());
-      // $info->setType('info');
-      // $info->setSubType('string');
-      // $info->save();
+      $info = $this->getCmd(null, 'openingTime');
+      if (!is_object($info)) {
+         $info = new pi0ulaillerCmd();
+         $info->setName(__('Heure ouverture', __FILE__));
+      }
+      $info->setLogicalId('openingTime');
+      $info->setEqLogic_id($this->getId());
+      $info->setType('info');
+      $info->setSubType('string');
+      $info->save();
 
-      // $info = $this->getCmd(null, 'setOpeningTime');
-      // if (!is_object($info)) {
-      //    $info = new pi0ulaillerCmd();
-      //    $info->setName(__('Changer heure ouverture', __FILE__));
-      // }
-      // $info->setLogicalId('setOpeningTime');
-      // $info->setEqLogic_id($this->getId());
-      // $info->setType('action');
-      // $info->setSubType('other');
-      // $info->save();
+      $info = $this->getCmd(null, 'setOpeningTime');
+      if (!is_object($info)) {
+         $info = new pi0ulaillerCmd();
+         $info->setName(__('Changer heure ouverture', __FILE__));
+      }
+      $info->setLogicalId('setOpeningTime');
+      $info->setEqLogic_id($this->getId());
+      $info->setType('action');
+      $info->setSubType('other');
+      $info->save();
       
-      // // closing time
-      // $info = $this->getCmd(null, 'closingTime');
-      // if (!is_object($info)) {
-      //    $info = new pi0ulaillerCmd();
-      //    $info->setName(__('Heure fermeture', __FILE__));
-      // }
-      // $info->setLogicalId('closingTime');
-      // $info->setEqLogic_id($this->getId());
-      // $info->setType('info');
-      // $info->setSubType('string');
-      // $info->save();
+      // closing time
+      $info = $this->getCmd(null, 'closingTime');
+      if (!is_object($info)) {
+         $info = new pi0ulaillerCmd();
+         $info->setName(__('Heure fermeture', __FILE__));
+      }
+      $info->setLogicalId('closingTime');
+      $info->setEqLogic_id($this->getId());
+      $info->setType('info');
+      $info->setSubType('string');
+      $info->save();
 
-      // $info = $this->getCmd(null, 'setClosingTime');
-      // if (!is_object($info)) {
-      //    $info = new pi0ulaillerCmd();
-      //    $info->setName(__('Changer heure fermeture', __FILE__));
-      // }
-      // $info->setLogicalId('setClosingTime');
-      // $info->setEqLogic_id($this->getId());
-      // $info->setType('action');
-      // $info->setSubType('other');
-      // $info->save();
+      $info = $this->getCmd(null, 'setClosingTime');
+      if (!is_object($info)) {
+         $info = new pi0ulaillerCmd();
+         $info->setName(__('Changer heure fermeture', __FILE__));
+      }
+      $info->setLogicalId('setClosingTime');
+      $info->setEqLogic_id($this->getId());
+      $info->setType('action');
+      $info->setSubType('other');
+      $info->save();
    }
 
    // Fonction exécutée automatiquement avant la suppression de l'équipement 
@@ -208,45 +208,46 @@ class pi0ulailler extends eqLogic
      */
 
    /*     * **********************Getteur Setteur*************************** */
-   // public function updateRainData() {
-   //    $result = $this->makeRequest('rain', null);
+   public function updateRainData() {
+      $result = $this->makeRequest('rain', null);
 
-   //    if($result) {
-   //       $this->getEqLogic()->checkAndUpdateCmd('rain', $result->rain_mm_value);
-   //    }
+      if($result) {
+         $this->getEqLogic()->checkAndUpdateCmd('rain', $result->rain_mm_value);
+      }  
+   }
 
-      
-   // }
+   public function updateChickenCoopData() {
+      $this->makeRequest(null, null);
+   }
 
-   // public function updateChickenCoopData() {
-   //    $this->makeRequest(null, null);
-   // }
+   public function updateData() {
+      $this->getRainData();
+      $this->getChickenCoopData();
+   }
 
-   // public function updateData() {
-   //    $this->getRainData();
-   //    $this->getChickenCoopData();
-   // }
+   public function makeRequest($category, $cmd) {
 
-   // public function makeRequest($subEquip, $cmd) {
+      log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. json_encode($this->getConfiguration('adressip')));
 
-   //    if(!empty($subEquip)) {
-   //       $url = 'http://' . $this->getConfiguration('addressip') . '/getdata';
-   //    }
-   //    else {
-   //       $url = 'http://' . $this->getConfiguration('addressip') . '/' . $subEquip . '/getdata';
-   //    }
+      if(!empty($category)) {
+         $url = 'http://' . $this->getConfiguration('addressip') . '/getdata';
+      }
+      else {
+         $url = 'http://' . $this->getConfiguration('addressip') . '/' . $category . '/getdata';
+      }
 		
-	// 	log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. $url);
-	// 	$request_http = new com_http($url);
-	// 	$return = $request_http->exec(10, 5);
-	// 	$return = json_decode($return);
-	// 	if($return->Info->RSP != 'OK') {
-	// 		log::add('pi0ulailler', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. ' réponse erreur ' . $cmd);
-	// 		return false;
-	// 	} else {
-	// 		return $return;
-	// 	}
-	// }
+		log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. $url);
+		$request_http = new com_http($url);
+		$return = $request_http->exec(10, 5);
+		$return = json_decode($return);
+		if($return->Info->RSP != 'OK') {
+			log::add('pi0ulailler', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. ' réponse erreur ' . $cmd);
+			return false;
+		} else {
+         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Result '. json_encode($return));
+			return $return;
+		}
+	}
 }
 
 class pi0ulaillerCmd extends cmd
