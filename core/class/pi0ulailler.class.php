@@ -105,6 +105,18 @@ class pi0ulailler extends eqLogic
    // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement 
    public function postSave()
    {
+      // refresh
+      $info = $this->getCmd(null, 'refresh');
+      if (!is_object($info)) {
+         $info = new pi0ulaillerCmd();
+         $info->setName(__('Rafraichir', __FILE__));
+      }
+      $info->setLogicalId('refresh');
+      $info->setEqLogic_id($this->getId());
+      $info->setType('action');
+      $info->setSubType('other');
+      $info->save();
+
       //================== rainmeter
       // rain
       $info = $this->getCmd(null, 'rain');
@@ -260,15 +272,15 @@ class pi0ulaillerCmd extends cmd
    public function execute($_options = array())
    {
       $eqlogic = $this->getEqLogic(); // récupère l'éqlogic de la commande $this
-      log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command: ' . $this->getLogicalId());
+      log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command: ' . $eqlogic);
 
 		switch ($this->getLogicalId()) {	// vérifie le logicalid de la commande 			
 			case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
 				$info = $eqlogic->updateData(); 
             break;
          case 'rain': 
-               $info = $eqlogic->updateRainData(); 
-               break;
+            $info = $eqlogic->updateRainData(); 
+            break;
 		}
    }
    

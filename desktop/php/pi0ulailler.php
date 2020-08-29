@@ -97,7 +97,7 @@ foreach (jeeObject::all() as $object) {
        <div class="form-group">
         <label class="col-sm-3 control-label">{{Paramètres}}</label>
         <div class="col-sm-3">
-            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="city" placeholder="ipadress"/>
+            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="ipAdress" placeholder="{{Adresse IP}}"/>
         </div>
     </div>
 </fieldset>
