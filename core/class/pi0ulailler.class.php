@@ -132,50 +132,50 @@ class pi0ulailler extends eqLogic
 
       //================== chickencoop
       // opening time
-      $info = $this->getCmd(null, 'openingTime');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Heure ouverture', __FILE__));
-      }
-      $info->setLogicalId('openingTime');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('info');
-      $info->setSubType('other');
-      $info->save();
+      // $info = $this->getCmd(null, 'openingTime');
+      // if (!is_object($info)) {
+      //    $info = new pi0ulaillerCmd();
+      //    $info->setName(__('Heure ouverture', __FILE__));
+      // }
+      // $info->setLogicalId('openingTime');
+      // $info->setEqLogic_id($this->getId());
+      // $info->setType('info');
+      // $info->setSubType('string');
+      // $info->save();
 
-      $info = $this->getCmd(null, 'setOpeningTime');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Changer heure ouverture', __FILE__));
-      }
-      $info->setLogicalId('setOpeningTime');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('action');
-      $info->setSubType('other');
-      $info->save();
+      // $info = $this->getCmd(null, 'setOpeningTime');
+      // if (!is_object($info)) {
+      //    $info = new pi0ulaillerCmd();
+      //    $info->setName(__('Changer heure ouverture', __FILE__));
+      // }
+      // $info->setLogicalId('setOpeningTime');
+      // $info->setEqLogic_id($this->getId());
+      // $info->setType('action');
+      // $info->setSubType('other');
+      // $info->save();
       
-      // closing time
-      $info = $this->getCmd(null, 'closingTime');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Heure fermeture', __FILE__));
-      }
-      $info->setLogicalId('closingTime');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('info');
-      $info->setSubType('other');
-      $info->save();
+      // // closing time
+      // $info = $this->getCmd(null, 'closingTime');
+      // if (!is_object($info)) {
+      //    $info = new pi0ulaillerCmd();
+      //    $info->setName(__('Heure fermeture', __FILE__));
+      // }
+      // $info->setLogicalId('closingTime');
+      // $info->setEqLogic_id($this->getId());
+      // $info->setType('info');
+      // $info->setSubType('string');
+      // $info->save();
 
-      $info = $this->getCmd(null, 'setClosingTime');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Changer heure fermeture', __FILE__));
-      }
-      $info->setLogicalId('setClosingTime');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('action');
-      $info->setSubType('other');
-      $info->save();
+      // $info = $this->getCmd(null, 'setClosingTime');
+      // if (!is_object($info)) {
+      //    $info = new pi0ulaillerCmd();
+      //    $info->setName(__('Changer heure fermeture', __FILE__));
+      // }
+      // $info->setLogicalId('setClosingTime');
+      // $info->setEqLogic_id($this->getId());
+      // $info->setType('action');
+      // $info->setSubType('other');
+      // $info->save();
    }
 
    // Fonction exécutée automatiquement avant la suppression de l'équipement 
@@ -272,7 +272,7 @@ class pi0ulaillerCmd extends cmd
    public function execute($_options = array())
    {
       // $eqlogic = $this->getEqLogic(); // récupère l'éqlogic de la commande $this
-      log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command: ' . $_options);
+      // log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command: ' . $_options);
 
 		// switch ($this->getLogicalId()) {	// vérifie le logicalid de la commande 			
 		// 	case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
