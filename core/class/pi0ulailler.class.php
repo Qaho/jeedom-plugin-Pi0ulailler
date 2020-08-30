@@ -148,26 +148,34 @@ class pi0ulailler extends eqLogic
      */
 
    /*     * **********************Getteur Setteur*************************** */
-   public function updateRainData()
+   public function refreshRainData()
    {
       $result = $this->sendGetRequest('rain', null);
+      $this->updateRainData($result);
+   }
 
-      if ($result) {
-         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update rain data: ' . $result->{'rain_mm_value'});
-         $this->checkAndUpdateCmd('rain', $result->{'rain_mm_value'});
+   private function updateRainData($data)
+   {
+      if ($data) {
+         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update rain data: ' . $data->{'rain_mm_value'});
+         $this->checkAndUpdateCmd('rain', $data->{'rain_mm_value'});
       }
    }
 
-   public function updateChickenData()
+   public function refreshChickenData()
    {
       $result = $this->sendGetRequest('chicken', null);
+      $this->updateChickenData($result);
+   }
 
-      if ($result) {
-         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update chicken data: ' . json_encode($result));
-         $this->checkAndUpdateCmd('openingTime', $result->{'openingTime'});
-         $this->checkAndUpdateCmd('closingTime', $result->{'closingTime'});
+   private function updateChickenData($data)
+   {
+      if ($data) {
+         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update chicken data: ' . json_encode($data));
+         $this->checkAndUpdateCmd('openingTime', $data->{'openingTime'});
+         $this->checkAndUpdateCmd('closingTime', $data->{'closingTime'});
 
-         foreach ($result->{'doors'} as $door) {
+         foreach ($data->{'doors'} as $door) {
 
             // check if door commands exist or create it
             log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Checking door exists: ' . json_encode($door));
@@ -203,10 +211,10 @@ class pi0ulailler extends eqLogic
       $info->save();
    }
 
-   public function updateData()
+   public function refreshData()
    {
-      $this->updateRainData();
-      $this->updateChickenData();
+      $this->refreshRainData();
+      $this->refreshChickenData();
    }
 
    private function getUrl($category, $cmd)
@@ -305,13 +313,21 @@ class pi0ulaillerCmd extends cmd
 
       switch ($cmd) {   // vérifie le logicalid de la commande 			
          case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
-            $eqlogic->updateData();
+            $eqlogic->refreshData();
             break;
          case 'rain':
-            $eqlogic->updateRainData();
+            $eqlogic->refreshRainData();
             break;
          case 'chicken':
-            $eqlogic->updateChickenData();
+            $eqlogic->refreshChickenData();
+            break;
+         case 'setOpeningTime':
+            $result = $eqlogic->sendPostRequest('chicken', $cmd);
+            $eqlogic->updateChickenData($result);
+            break;
+         case 'setClosingTime':
+            $result = $eqlogic->sendPostRequest('chicken', $cmd);
+            $eqlogic->updateChickenData($result);
             break;
          default:
             // handle doors control
