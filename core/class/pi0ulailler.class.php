@@ -192,7 +192,7 @@ class pi0ulailler extends eqLogic
          $info = new pi0ulaillerCmd();
          $info->setName(__($name, __FILE__));
       }
-      $info->setLogicalId('door_' . $door->{'id'});
+      $info->setLogicalId($id);
       $info->setEqLogic_id($this->getId());
       $info->setType($type);
       $info->setSubType($subtype);
@@ -280,7 +280,7 @@ class pi0ulaillerCmd extends cmd
                $doorId = substr($cmdData, $lastIndex + 1, strlen($cmd) - $lastIndex);
                log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - ' . 'Door command: cmdData=' . $cmdData. ' cmdAction=' . $cmdAction . 'doorId=' . $doorId);
 
-               
+
             }
             else {
                log::add('pi0ulailler', 'error', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command not implemented: ' . $cmd);
