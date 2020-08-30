@@ -234,7 +234,7 @@ class pi0ulailler extends eqLogic
    {
 
       log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - sendGetRequest: ' . $category . ' - ' . $cmd);
-      $url = this->getUrl($category, $cmd);
+      $url = $this->getUrl($category, $cmd);
 
       $request_http = new com_http($url);
       $return = $request_http->exec(10, 5);
