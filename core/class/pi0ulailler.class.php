@@ -322,11 +322,11 @@ class pi0ulaillerCmd extends cmd
             $eqlogic->refreshChickenData();
             break;
          case 'setOpeningTime':
-            $result = $eqlogic->sendPostRequest('chicken', $cmd);
+            $result = $eqlogic->sendPostRequest('chicken', strtolower($cmd));
             $eqlogic->updateChickenData($result);
             break;
          case 'setClosingTime':
-            $result = $eqlogic->sendPostRequest('chicken', $cmd);
+            $result = $eqlogic->sendPostRequest('chicken', strtolower($cmd));
             $eqlogic->updateChickenData($result);
             break;
          default:
