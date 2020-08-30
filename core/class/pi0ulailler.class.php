@@ -229,7 +229,7 @@ class pi0ulailler extends eqLogic
             
             // check if door commands exist or create it
             log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Checking door exists: '. json_encode($door));
-            $this->checkAndCreateDoorCommands($door)
+            $this->checkAndCreateDoorCommands($door);
 
             // refresh door data
             $this->checkAndUpdateCmd('door_' . $door->{'id'}, $door->{'name'});
