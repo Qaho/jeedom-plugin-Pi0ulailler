@@ -274,11 +274,11 @@ class pi0ulailler extends eqLogic
          log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - Response error on cmd: ' . $cmd);
       } else {
          $result = json_decode($result);
-         
-         if($result->{'state'} == "ok")
+
+         if ($result->{'state'} == "ok")
             log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . $result);
          else
-            log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Error on command '.$cmd.' with data '.$data.' - Result: ' . $result);
+            log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Error on command ' . $cmd . ' with data ' . $data . ' - Result: ' . $result);
       }
 
       return $result;
@@ -322,10 +322,22 @@ class pi0ulaillerCmd extends cmd
             $eqlogic->refreshChickenData();
             break;
          case 'setOpeningTime':
-            $result = $eqlogic->sendPostRequest('chicken', strtolower($cmd));
+
+            $data = (object) [
+               'id' => 'openingTime',
+               'value' => '10.00'
+            ];
+
+            $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
             $eqlogic->updateChickenData($result);
             break;
          case 'setClosingTime':
+            
+            $data = (object) [
+               'id' => 'closingTime',
+               'value' => '22.00'
+            ];
+
             $result = $eqlogic->sendPostRequest('chicken', strtolower($cmd));
             $eqlogic->updateChickenData($result);
             break;
