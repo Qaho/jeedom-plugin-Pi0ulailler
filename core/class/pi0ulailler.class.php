@@ -105,77 +105,17 @@ class pi0ulailler extends eqLogic
    // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement 
    public function postSave()
    {
-      // refresh
-      $info = $this->getCmd(null, 'refresh');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Rafraichir', __FILE__));
-      }
-      $info->setLogicalId('refresh');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('action');
-      $info->setSubType('other');
-      $info->save();
-
-      //================== rainmeter
-      // rain
-      $info = $this->getCmd(null, 'rain');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Pluie', __FILE__));
-      }
-      $info->setLogicalId('rain');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('info');
-      $info->setSubType('numeric');
-      $info->save();
-
-      //================== chickencoop
-      // opening time
-      $info = $this->getCmd(null, 'openingTime');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Heure ouverture', __FILE__));
-      }
-      $info->setLogicalId('openingTime');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('info');
-      $info->setSubType('string');
-      $info->save();
-
-      $info = $this->getCmd(null, 'setOpeningTime');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Changer heure ouverture', __FILE__));
-      }
-      $info->setLogicalId('setOpeningTime');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('action');
-      $info->setSubType('other');
-      $info->save();
       
-      // closing time
-      $info = $this->getCmd(null, 'closingTime');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Heure fermeture', __FILE__));
-      }
-      $info->setLogicalId('closingTime');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('info');
-      $info->setSubType('string');
-      $info->save();
+      $this->createCommand('refresh', 'Rafraichir', 'action', 'other'); // refresh
 
-      $info = $this->getCmd(null, 'setClosingTime');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__('Changer heure fermeture', __FILE__));
-      }
-      $info->setLogicalId('setClosingTime');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('action');
-      $info->setSubType('other');
-      $info->save();
+      // rainmeter
+      $this->createCommand('rain', 'Pluie', 'info', 'numeric'); // rain
+
+      // chickencoop
+      $this->createCommand('openingTime', 'Heure ouverture', 'info', 'string'); // opening time
+      $this->createCommand('setOpeningTime', 'Changer heure ouverture', 'action', 'other'); // set opening time
+      $this->createCommand('closingTime', 'Heure fermeture', 'info', 'string'); // closing time
+      $this->createCommand('setClosingTime', 'Changer heure fermeture', 'action', 'other'); // set closing time
    }
 
    // Fonction exécutée automatiquement avant la suppression de l'équipement 
@@ -239,29 +179,23 @@ class pi0ulailler extends eqLogic
    }
 
    private function checkAndCreateDoorCommands($door) {
+      $this->createCommand('door_' . $door->{'id'}, $door->{'name'}, 'info', 'string'); // name
+      $this->createCommand('door_' . $door->{'id'}. '_status', $door->{'name'}. ' statut', 'info', 'string'); // statut
+      $this->createCommand('door_' . $door->{'id'}. '_open', 'Ouvrir ' . strtolower($door->{'name'}), 'action', 'other'); // open
+      $this->createCommand('door_' . $door->{'id'}. '_close', 'Fermer ' . strtolower($door->{'name'}), 'action', 'other'); // close
+      $this->createCommand('door_' . $door->{'id'}. '_stop', 'Arreter ' . strtolower($door->{'name'}), 'action', 'other'); // stop
+   }
 
-      // name
-      $info = $this->getCmd(null, 'door_' . $door->{'id'});
+   private function createCommand($id, $name, $type, $subtype) {
+      $info = $this->getCmd(null, $id);
       if (!is_object($info)) {
          $info = new pi0ulaillerCmd();
-         $info->setName(__($door->{'name'}, __FILE__));
+         $info->setName(__($name, __FILE__));
       }
       $info->setLogicalId('door_' . $door->{'id'});
       $info->setEqLogic_id($this->getId());
-      $info->setType('info');
-      $info->setSubType('string');
-      $info->save();
-
-      // status
-      $info = $this->getCmd(null, 'door_' . $door->{'id'} . '_status');
-      if (!is_object($info)) {
-         $info = new pi0ulaillerCmd();
-         $info->setName(__($door->{'name'} . ' statut', __FILE__));
-      }
-      $info->setLogicalId('door_' . $door->{'id'} . '_status');
-      $info->setEqLogic_id($this->getId());
-      $info->setType('info');
-      $info->setSubType('string');
+      $info->setType($type);
+      $info->setSubType($subtype);
       $info->save();
    }
 
@@ -281,8 +215,11 @@ class pi0ulailler extends eqLogic
       if(!empty($this->getConfiguration('port'))) $url .= ':' . $this->getConfiguration('port');
       // add category
       if(!empty($category)) $url .= '/' . $category;
-      
-      $url .= '/getdata';
+      // cmd
+      if(!empty($cmd)) 
+         $url .= '/' . $cmd;
+      else
+         $url .= '/getdata';
 		
 		log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Get URL: '. $url);
 		$request_http = new com_http($url);
@@ -332,6 +269,22 @@ class pi0ulaillerCmd extends cmd
             break;
          case 'chicken': 
             $eqlogic->updateChickenData(); 
+            break;
+         default:
+            // handle doors control
+            if(substr($cmd, 0, 5) === "door_") {
+               // split door id and command action
+               $cmdData = substr($cmd, 4, strlen($cmd) - 5);
+               $lastIndex = strrpos($cmdData, "_");
+               $cmdAction = substr($cmdData, 0, $lastIndex + 1);
+               $doorId = substr($cmdData, $lastIndex + 1, strlen($cmd) - $lastIndex);
+               log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - ' . 'Door command: cmdData=' . $cmdData. ' cmdAction=' . $cmdAction . 'doorId=' . $doorId);
+
+               
+            }
+            else {
+               log::add('pi0ulailler', 'error', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command not implemented: ' . $cmd);
+            }
             break;
 		}
    }
