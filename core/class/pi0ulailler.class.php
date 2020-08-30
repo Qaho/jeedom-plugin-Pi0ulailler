@@ -212,8 +212,8 @@ class pi0ulailler extends eqLogic
       $result = $this->makeRequest('rain', null);
 
       if($result) {
-         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Update rain data: '. str_replace(".", ",", $result->{'rain_mm_value'}));
-         $this->getEqLogic()->checkAndUpdateCmd('rain', str_replace(".", ",", $result->{'rain_mm_value'}));
+         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Update rain data: '. $result->{'rain_mm_value'});
+         $this->checkAndUpdateCmd('rain', $result->{'rain_mm_value'});
       }  
    }
 
