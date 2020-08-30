@@ -274,11 +274,12 @@ class pi0ulaillerCmd extends cmd
             // handle doors control
             if(substr($cmd, 0, 5) === "door_") {
                // split door id and command action
-               $cmdData = substr($cmd, 4, strlen($cmd) - 5);
+               //Door command: cmdData=_porteinterieure_sto cmdAction=_porteinterieure_ doorId=sto
+               $cmdData = substr($cmd, 5, strlen($cmd) - 5);
                $lastIndex = strrpos($cmdData, "_");
-               $cmdAction = substr($cmdData, 0, $lastIndex + 1);
+               $cmdAction = substr($cmdData, 0, $lastIndex);
                $doorId = substr($cmdData, $lastIndex + 1, strlen($cmd) - $lastIndex);
-               log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - ' . 'Door command: cmdData=' . $cmdData. ' cmdAction=' . $cmdAction . 'doorId=' . $doorId);
+               log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - ' . 'Door command: cmdData=' . $cmdData. ' cmdAction=' . $cmdAction . ' doorId=' . $doorId);
 
 
             }
