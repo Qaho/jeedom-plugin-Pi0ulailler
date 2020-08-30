@@ -256,8 +256,8 @@ class pi0ulailler extends eqLogic
 
    public function sendPostRequest($category, $cmd, $data = null)
    {
-
-      log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - sendPosttRequest: ' . $category . ' - ' . $cmd);
+      $data = json_encode($data);
+      log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - sendPosttRequest: ' . $category . ' - ' . $cmd. ' with data ' . $data);
       $url = $this->getUrl($category, $cmd);
 
       // use key 'http' even if you send the request to https://...
@@ -271,7 +271,7 @@ class pi0ulailler extends eqLogic
       $context  = stream_context_create($options);
       $result = file_get_contents($url, false, $context);
       if ($result === FALSE) {
-         log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - Response error on cmd: ' . $cmd);
+         log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - Response error on cmd: ' . $cmd . ' with data ' . $data);
       } else {
          $result = json_decode($result);
 
