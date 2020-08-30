@@ -261,7 +261,7 @@ class pi0ulailler extends eqLogic
       $url = $this->getUrl($category, $cmd);
 
       $request_http = new com_http($url);
-      $request_http->setPost($data);
+      $request_http->setPost(var_dump(json_decode($data)));
       $result = $request_http->exec(10, 5);
 
       if ($result === FALSE) {
