@@ -265,7 +265,7 @@ class pi0ulailler extends eqLogic
          'http' => array(
             'header'  => "Content-type: application/json\r\n",
             'method'  => 'POST',
-            'content' => http_build_query($data)
+            'content' => http_build_query(json_decode($data))
          )
       );
       $context  = stream_context_create($options);
