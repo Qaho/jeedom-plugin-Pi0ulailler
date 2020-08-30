@@ -217,13 +217,57 @@ class pi0ulailler extends eqLogic
       }  
    }
 
-   public function updateChickenCoopData() {
-      $this->makeRequest(null, null);
+   public function updateChickenData() {
+      $result = $this->makeRequest('chicken', null);
+      
+      if($result) {
+         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Update chicken data: '. $result);
+         $this->checkAndUpdateCmd('openingTime', $result->{'openingTime'});
+         $this->checkAndUpdateCmd('closingTime', $result->{'closingTime'});
+
+         foreach ($result->{'doors'} as $door){
+            
+            // check if door commands exist or create it
+            log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Checking door exists: '. json_encode($door));
+            $this->checkAndCreateDoorCommands($door)
+
+            // refresh door data
+            $this->checkAndUpdateCmd('door_' . $door->{'id'}, $door->{'name'});
+            $this->checkAndUpdateCmd('door_' . $door->{'id'} . '_status', $door->{'status'});
+         }
+      }  
+   }
+
+   private function checkAndCreateDoorCommands($door) {
+
+      // name
+      $info = $this->getCmd(null, 'door_' . $door->{'id'});
+      if (!is_object($info)) {
+         $info = new pi0ulaillerCmd();
+         $info->setName(__($door->{'name'}, __FILE__));
+      }
+      $info->setLogicalId('door_' . $door->{'id'});
+      $info->setEqLogic_id($this->getId());
+      $info->setType('info');
+      $info->setSubType('string');
+      $info->save();
+
+      // status
+      $info = $this->getCmd(null, 'door_' . $door->{'id'} . '_status');
+      if (!is_object($info)) {
+         $info = new pi0ulaillerCmd();
+         $info->setName(__($door->{'name'} . ' statut', __FILE__));
+      }
+      $info->setLogicalId('door_' . $door->{'id'} . '_status');
+      $info->setEqLogic_id($this->getId());
+      $info->setType('info');
+      $info->setSubType('string');
+      $info->save();
    }
 
    public function updateData() {
       $this->updateRainData();
-      $this->updateChickenCoopData();
+      $this->updateChickenData();
    }
 
    public function makeRequest($category, $cmd) {
@@ -243,7 +287,12 @@ class pi0ulailler extends eqLogic
 		log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Get URL: '. $url);
 		$request_http = new com_http($url);
       $return = $request_http->exec(10, 5);
-      log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Result: '. $return);
+      if(!isset($return)) {
+         log::add('pi0ulailler', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. 'Response error on cmd: ' . $cmd);
+      }
+      else {
+         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Result: '. $return);
+      }
       return json_decode($return);
 	}
 }
@@ -280,6 +329,9 @@ class pi0ulaillerCmd extends cmd
             break;
          case 'rain': 
             $eqlogic->updateRainData(); 
+            break;
+         case 'chicken': 
+            $eqlogic->updateChickenData(); 
             break;
 		}
    }
