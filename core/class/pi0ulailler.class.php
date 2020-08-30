@@ -325,7 +325,7 @@ class pi0ulaillerCmd extends cmd
 
             $data = (object) [
                'id' => 'openingTime',
-               'value' => '10.00'
+               'value' => '10:00'
             ];
 
             $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
@@ -335,10 +335,10 @@ class pi0ulaillerCmd extends cmd
             
             $data = (object) [
                'id' => 'closingTime',
-               'value' => '22.00'
+               'value' => '22:00'
             ];
 
-            $result = $eqlogic->sendPostRequest('chicken', strtolower($cmd));
+            $result = $eqlogic->sendPostRequest('chicken', strtolower($cmd), $data);
             $eqlogic->updateChickenData($result);
             break;
          default:
