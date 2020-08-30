@@ -105,7 +105,7 @@ class pi0ulailler extends eqLogic
    // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement 
    public function postSave()
    {
-      
+
       $this->createCommand('refresh', 'Rafraichir', 'action', 'other'); // refresh
 
       // rainmeter
@@ -148,45 +148,49 @@ class pi0ulailler extends eqLogic
      */
 
    /*     * **********************Getteur Setteur*************************** */
-   public function updateRainData() {
-      $result = $this->makeRequest('rain', null);
+   public function updateRainData()
+   {
+      $result = $this->sendGetRequest('rain', null);
 
-      if($result) {
-         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Update rain data: '. $result->{'rain_mm_value'});
+      if ($result) {
+         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update rain data: ' . $result->{'rain_mm_value'});
          $this->checkAndUpdateCmd('rain', $result->{'rain_mm_value'});
-      }  
+      }
    }
 
-   public function updateChickenData() {
-      $result = $this->makeRequest('chicken', null);
-      
-      if($result) {
-         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Update chicken data: '. json_encode($result));
+   public function updateChickenData()
+   {
+      $result = $this->sendGetRequest('chicken', null);
+
+      if ($result) {
+         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update chicken data: ' . json_encode($result));
          $this->checkAndUpdateCmd('openingTime', $result->{'openingTime'});
          $this->checkAndUpdateCmd('closingTime', $result->{'closingTime'});
 
-         foreach ($result->{'doors'} as $door){
-            
+         foreach ($result->{'doors'} as $door) {
+
             // check if door commands exist or create it
-            log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Checking door exists: '. json_encode($door));
+            log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Checking door exists: ' . json_encode($door));
             $this->checkAndCreateDoorCommands($door);
 
             // refresh door data
             $this->checkAndUpdateCmd('door_' . $door->{'id'}, $door->{'name'});
             $this->checkAndUpdateCmd('door_' . $door->{'id'} . '_status', $door->{'status'});
          }
-      }  
+      }
    }
 
-   private function checkAndCreateDoorCommands($door) {
+   private function checkAndCreateDoorCommands($door)
+   {
       $this->createCommand('door_' . $door->{'id'}, $door->{'name'}, 'info', 'string'); // name
-      $this->createCommand('door_' . $door->{'id'}. '_status', $door->{'name'}. ' statut', 'info', 'string'); // statut
-      $this->createCommand('door_' . $door->{'id'}. '_open', 'Ouvrir ' . strtolower($door->{'name'}), 'action', 'other'); // open
-      $this->createCommand('door_' . $door->{'id'}. '_close', 'Fermer ' . strtolower($door->{'name'}), 'action', 'other'); // close
-      $this->createCommand('door_' . $door->{'id'}. '_stop', 'Arreter ' . strtolower($door->{'name'}), 'action', 'other'); // stop
+      $this->createCommand('door_' . $door->{'id'} . '_status', $door->{'name'} . ' statut', 'info', 'string'); // statut
+      $this->createCommand('door_' . $door->{'id'} . '_open', 'Ouvrir ' . strtolower($door->{'name'}), 'action', 'other'); // open
+      $this->createCommand('door_' . $door->{'id'} . '_close', 'Fermer ' . strtolower($door->{'name'}), 'action', 'other'); // close
+      $this->createCommand('door_' . $door->{'id'} . '_stop', 'Arreter ' . strtolower($door->{'name'}), 'action', 'other'); // stop
    }
 
-   private function createCommand($id, $name, $type, $subtype) {
+   private function createCommand($id, $name, $type, $subtype)
+   {
       $info = $this->getCmd(null, $id);
       if (!is_object($info)) {
          $info = new pi0ulaillerCmd();
@@ -199,39 +203,73 @@ class pi0ulailler extends eqLogic
       $info->save();
    }
 
-   public function updateData() {
+   public function updateData()
+   {
       $this->updateRainData();
       $this->updateChickenData();
    }
 
-   public function makeRequest($category, $cmd) {
-
-      log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. json_encode($this->getConfiguration()));
+   private function getUrl($category, $cmd)
+   {
+      log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Get URL ' . json_encode($this->getConfiguration()));
 
       // get config ip address
       $url = 'http://' . $this->getConfiguration('ipAddress');
 
       // add port 
-      if(!empty($this->getConfiguration('port'))) $url .= ':' . $this->getConfiguration('port');
+      if (!empty($this->getConfiguration('port'))) $url .= ':' . $this->getConfiguration('port');
       // add category
-      if(!empty($category)) $url .= '/' . $category;
+      if (!empty($category)) $url .= '/' . $category;
       // cmd
-      if(!empty($cmd)) 
+      if (!empty($cmd))
          $url .= '/' . $cmd;
       else
          $url .= '/getdata';
-		
-		log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Get URL: '. $url);
-		$request_http = new com_http($url);
+
+      log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'URL: ' . $url);
+      return $url;
+   }
+
+   public function sendGetRequest($category, $cmd)
+   {
+
+      log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - sendGetRequest: ' . $category . ' - ' . $cmd);
+      $url = this->getUrl($category, $cmd);
+
+      $request_http = new com_http($url);
       $return = $request_http->exec(10, 5);
-      if(!isset($return)) {
-         log::add('pi0ulailler', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. 'Response error on cmd: ' . $cmd);
-      }
-      else {
-         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Result: '. $return);
+      if (!isset($return)) {
+         log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - Response error on cmd: ' . $cmd);
+      } else {
+         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . $return);
       }
       return json_decode($return);
-	}
+   }
+
+   public function sendPostRequest($category, $cmd, $data = null)
+   {
+
+      log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - sendPosttRequest: ' . $category . ' - ' . $cmd);
+      $url = $this->getUrl($category, $cmd);
+
+      // use key 'http' even if you send the request to https://...
+      $options = array(
+         'http' => array(
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data)
+         )
+      );
+      $context  = stream_context_create($options);
+      $result = file_get_contents($url, false, $context);
+      if ($result === FALSE) {
+         log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - Response error on cmd: ' . $cmd);
+      } else {
+         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . $result);
+      }
+
+      return var_dump($result);
+   }
 }
 
 class pi0ulaillerCmd extends cmd
@@ -257,39 +295,38 @@ class pi0ulaillerCmd extends cmd
    public function execute($_options = array())
    {
       $eqlogic = $this->getEqLogic(); // récupère l'éqlogic de la commande $this
-      $cmd = $this->getLogicalId(); 
-      log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command: ' . $cmd);
+      $cmd = $this->getLogicalId();
+      log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Command: ' . $cmd);
 
-		switch ($cmd) {	// vérifie le logicalid de la commande 			
-			case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
-				$eqlogic->updateData(); 
+      switch ($cmd) {   // vérifie le logicalid de la commande 			
+         case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
+            $eqlogic->updateData();
             break;
-         case 'rain': 
-            $eqlogic->updateRainData(); 
+         case 'rain':
+            $eqlogic->updateRainData();
             break;
-         case 'chicken': 
-            $eqlogic->updateChickenData(); 
+         case 'chicken':
+            $eqlogic->updateChickenData();
             break;
          default:
             // handle doors control
-            if(substr($cmd, 0, 5) === "door_") {
+            if (substr($cmd, 0, 5) === "door_") {
                // split door id and command action
                //Door command: cmdData=_porteinterieure_sto cmdAction=_porteinterieure_ doorId=sto
                $cmdData = substr($cmd, 5, strlen($cmd) - 5);
                $lastIndex = strrpos($cmdData, "_");
                $doorId = substr($cmdData, 0, $lastIndex);
                $cmdAction = substr($cmdData, $lastIndex + 1, strlen($cmd) - $lastIndex);
-               log::add('pi0ulailler', 'debug', '('.__LINE__.') ' . __FUNCTION__.' - ' . 'Door command: cmdData=' . $cmdData. ' cmdAction=' . $cmdAction . ' doorId=' . $doorId);
+               log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Door command: cmdData=' . $cmdData . ' cmdAction=' . $cmdAction . ' doorId=' . $doorId);
 
-               $result = $eqlogic->makeRequest('chicken', $doorId . '/' . $cmdAction);
-            }
-            else {
-               log::add('pi0ulailler', 'error', '('.__LINE__.') ' . __FUNCTION__.' - '. 'Command not implemented: ' . $cmd);
+               $result = $eqlogic->sendPostRequest('chicken', $doorId . '/' . $cmdAction);
+            } else {
+               log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Command not implemented: ' . $cmd);
             }
             break;
-		}
+      }
    }
-   
+
 
    /*     * **********************Getteur Setteur*************************** */
 }
