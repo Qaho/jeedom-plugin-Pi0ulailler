@@ -212,8 +212,8 @@ class pi0ulailler extends eqLogic
       $result = $this->makeRequest('rain', null);
 
       if($result) {
-         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Update rain data: '. $result->rain_mm_value);
-         $this->getEqLogic()->checkAndUpdateCmd('rain', $result->rain_mm_value);
+         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Update rain data: '. $result->{'rain_mm_value'});
+         $this->getEqLogic()->checkAndUpdateCmd('rain', $result->{'rain_mm_value'});
       }  
    }
 
@@ -242,7 +242,7 @@ class pi0ulailler extends eqLogic
 		
 		log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Get URL: '. $url);
 		$request_http = new com_http($url);
-		$return = $request_http->exec(10, 5);
+      $return = $request_http->exec(10, 5);
       log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Result: '. $return);
       return json_decode($return);
 	}
