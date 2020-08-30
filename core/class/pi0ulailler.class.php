@@ -221,7 +221,7 @@ class pi0ulailler extends eqLogic
       $result = $this->makeRequest('chicken', null);
       
       if($result) {
-         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Update chicken data: '. $result);
+         log::add('pi0ulailler', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'Update chicken data: '. json_encode($result));
          $this->checkAndUpdateCmd('openingTime', $result->{'openingTime'});
          $this->checkAndUpdateCmd('closingTime', $result->{'closingTime'});
 
