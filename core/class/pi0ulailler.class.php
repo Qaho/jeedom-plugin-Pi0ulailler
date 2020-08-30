@@ -256,11 +256,12 @@ class pi0ulailler extends eqLogic
 
    public function sendPostRequest($category, $cmd, $data = null)
    {
-      log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . $category . ' - ' . $cmd. ' with data ' . json_encode($data));
+      $data = json_encode($data);
+      log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . $category . ' - ' . $cmd. ' with data ' . $data);
       $url = $this->getUrl($category, $cmd);
 
       $request_http = new com_http($url);
-      $request_http->setPost($data);
+      $request_http->setPost(array(utf8_encode($data)));
       $result = $request_http->exec(10, 5);
 
       if ($result === FALSE) {
