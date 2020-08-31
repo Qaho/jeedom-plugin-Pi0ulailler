@@ -154,7 +154,7 @@ class pi0ulailler extends eqLogic
       $this->updateRainData($result);
    }
 
-   private function updateRainData($data)
+   public function updateRainData($data)
    {
       if ($data) {
          log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update rain data: ' . $data->{'rain_mm_value'});
@@ -168,7 +168,7 @@ class pi0ulailler extends eqLogic
       $this->updateChickenData($result);
    }
 
-   private function updateChickenData($data)
+   public function updateChickenData($data)
    {
       if ($data) {
          log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update chicken data: ' . json_encode($data));
