@@ -262,7 +262,7 @@ class pi0ulailler extends eqLogic
 
       $request_http = new com_http($url);
       $request_http->setHeader(array('Content-Type: application/json', 'Content-Length: ' . strlen($data)));
-      $request_http->setPost($data);
+      $request_http->setPost(array($data));
       $result = $request_http->exec(10, 5);
 
       if ($result === FALSE) {
