@@ -157,8 +157,8 @@ class pi0ulailler extends eqLogic
    public function updateRainData($data)
    {
       if ($data) {
-         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update rain data: ' . $data->{'rain_mm_value'});
-         $this->checkAndUpdateCmd('rain', $data->{'rain_mm_value'});
+         log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update rain data: ' . $data->rain_mm_value);
+         $this->checkAndUpdateCmd('rain', $data->rain_mm_value);
       }
    }
 
@@ -172,29 +172,29 @@ class pi0ulailler extends eqLogic
    {
       if ($data) {
          log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update chicken data: ' . json_encode($data));
-         $this->checkAndUpdateCmd('openingTime', $data->{'openingTime'});
-         $this->checkAndUpdateCmd('closingTime', $data->{'closingTime'});
+         $this->checkAndUpdateCmd('openingTime', $data->openingTime);
+         $this->checkAndUpdateCmd('closingTime', $data->closingTime);
 
-         foreach ($data->{'doors'} as $door) {
+         foreach ($data->doors as $door) {
 
             // check if door commands exist or create it
             log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Checking door exists: ' . json_encode($door));
             $this->checkAndCreateDoorCommands($door);
 
             // refresh door data
-            $this->checkAndUpdateCmd('door_' . $door->{'id'}, $door->{'name'});
-            $this->checkAndUpdateCmd('door_' . $door->{'id'} . '_status', $door->{'status'});
+            $this->checkAndUpdateCmd('door_' . $door->id, $door->name);
+            $this->checkAndUpdateCmd('door_' . $door->id . '_status', $door->status);
          }
       }
    }
 
    private function checkAndCreateDoorCommands($door)
    {
-      $this->createCommand('door_' . $door->{'id'}, $door->{'name'}, 'info', 'string'); // name
-      $this->createCommand('door_' . $door->{'id'} . '_status', $door->{'name'} . ' statut', 'info', 'string'); // statut
-      $this->createCommand('door_' . $door->{'id'} . '_open', 'Ouvrir ' . strtolower($door->{'name'}), 'action', 'other'); // open
-      $this->createCommand('door_' . $door->{'id'} . '_close', 'Fermer ' . strtolower($door->{'name'}), 'action', 'other'); // close
-      $this->createCommand('door_' . $door->{'id'} . '_stop', 'Arreter ' . strtolower($door->{'name'}), 'action', 'other'); // stop
+      $this->createCommand('door_' . $door->id, $door->name, 'info', 'string'); // name
+      $this->createCommand('door_' . $door->id . '_status', $door->name . ' statut', 'info', 'string'); // statut
+      $this->createCommand('door_' . $door->id . '_open', 'Ouvrir ' . strtolower($door->name), 'action', 'other'); // open
+      $this->createCommand('door_' . $door->id . '_close', 'Fermer ' . strtolower($door->name), 'action', 'other'); // close
+      $this->createCommand('door_' . $door->id . '_stop', 'Arreter ' . strtolower($door->name), 'action', 'other'); // stop
    }
 
    private function createCommand($id, $name, $type, $subtype)
@@ -271,13 +271,14 @@ class pi0ulailler extends eqLogic
          $result = json_decode(stripslashes($result));
 
          if ($result->status == "OK") {
-            log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Status OK');
             log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . json_encode($result));
             $result = $result->data;
             log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Data: ' . json_encode($result));
          }
-         else
+         else {
             log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Error on command ' . $cmd . ' with data ' . $data . ' - Result: ' . $result);
+            $result = null;
+         }
       }
 
       return $result;
@@ -324,11 +325,11 @@ class pi0ulaillerCmd extends cmd
 
             $data = (object) [
                'id' => 'openingTime',
-               'value' => '10:13'
+               'value' => '10:15'
             ];
 
             $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
-            $eqlogic->updateChickenData($result->{'data'});
+            $eqlogic->updateChickenData($result);
             break;
          case 'setClosingTime':
             
@@ -338,7 +339,7 @@ class pi0ulaillerCmd extends cmd
             ];
 
             $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
-            $eqlogic->updateChickenData($result->{'data'});
+            $eqlogic->updateChickenData($result);
             break;
          default:
             // handle doors control
