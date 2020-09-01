@@ -268,7 +268,7 @@ class pi0ulailler extends eqLogic
       if ($result === FALSE) {
          log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - Response error on cmd: ' . $cmd . ' with data ' . $data);
       } else {
-         if ($result->{'status'} == "ok")
+         if ($result->{'status'} == "OK")
             log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . $result);
          else
             log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Error on command ' . $cmd . ' with data ' . $data . ' - Result: ' . $result);
@@ -318,7 +318,7 @@ class pi0ulaillerCmd extends cmd
 
             $data = (object) [
                'id' => 'openingTime',
-               'value' => '10:10'
+               'value' => '10:13'
             ];
 
             $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
