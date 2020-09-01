@@ -268,11 +268,10 @@ class pi0ulailler extends eqLogic
       if ($result === FALSE) {
          log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - Response error on cmd: ' . $cmd . ' with data ' . $data);
       } else {
-         if ($result->{'status'} == "ok")
-         {
+         $result = json_decode(stripslashes($result));
+
+         if ($result->status == "ok")
             log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . $result);
-            $result = json_decode(stripslashes($result));
-         }
          else
             log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Error on command ' . $cmd . ' with data ' . $data . ' - Result: ' . $result);
       }
@@ -335,7 +334,7 @@ class pi0ulaillerCmd extends cmd
             ];
 
             $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
-            $eqlogic->updateChickenData($result);
+            $eqlogic->updateChickenData($result->data);
             break;
          default:
             // handle doors control
