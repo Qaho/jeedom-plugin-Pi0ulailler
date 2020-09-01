@@ -268,10 +268,10 @@ class pi0ulailler extends eqLogic
       if ($result === FALSE) {
          log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - Response error on cmd: ' . $cmd . ' with data ' . $data);
       } else {
-         $result = json_decode(stripslashes($result));
+         $result = json_decode($result);
 
          if ($result->status == "ok")
-            log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . $result);
+            log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . json_encode($result));
          else
             log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Error on command ' . $cmd . ' with data ' . $data . ' - Result: ' . $result);
       }
