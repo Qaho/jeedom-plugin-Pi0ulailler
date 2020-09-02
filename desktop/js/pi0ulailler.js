@@ -37,7 +37,7 @@ function addCmdToTable(_cmd) {
     tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>';
     tr += '</td>';
     tr += '<td>';
-    if (_cmd.id.startsWith("set")) {
+    if (_cmd.logicalId.startsWith("set")) {
         tr += '<span><input class="cmdAttr form-control" data-l1key="configuration" data-l2key="cmdTime"></span>';
     }
     tr += '</td>';
