@@ -323,23 +323,39 @@ class pi0ulaillerCmd extends cmd
             break;
          case 'setOpeningTime':
 
-            $data = (object) [
-               'id' => 'openingTime',
-               'value' => '10:15'
-            ];
+            $time = $eqlogic->getConfiguration('cmdTime');
 
-            $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
-            $eqlogic->updateChickenData($result);
+            if(preg_match('#^[01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$#', $time))
+            {
+               $data = (object) [
+                  'id' => 'openingTime',
+                  'value' => $time
+               ];
+
+               $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
+               $eqlogic->updateChickenData($result);
+            }
+            else {
+               log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Time is not in a correct format: "' . $time . '"');
+            }
             break;
          case 'setClosingTime':
             
-            $data = (object) [
-               'id' => 'closingTime',
-               'value' => '22:22'
-            ];
+            $time = $eqlogic->getConfiguration('cmdTime');
 
-            $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
-            $eqlogic->updateChickenData($result);
+            if(preg_match('#^[01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$#', $time))
+            {
+               $data = (object) [
+                  'id' => 'closingTime',
+                  'value' => $time
+               ];
+
+               $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
+               $eqlogic->updateChickenData($result);
+            }
+            else {
+               log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Time is not in a correct format: "' . $time . '"');
+            }
             break;
          default:
             // handle doors control
