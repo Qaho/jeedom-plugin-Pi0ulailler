@@ -38,7 +38,8 @@ function addCmdToTable(_cmd) {
     tr += '</td>';
     tr += '<td>';
     if (_cmd.logicalId.startsWith("set")) {
-        tr += '<span><input class="cmdAttr form-control" data-l1key="configuration" data-l2key="cmdTime"></span>';
+        
+        tr += '<div class="input-group"><span>{{Heure}}<input class="cmdAttr form-control" data-l1key="configuration" data-l2key="cmdTime"></span></div>';
     }
     tr += '</td>';
     tr += '<td>';
