@@ -30,7 +30,7 @@ class pi0ulailler extends eqLogic
 	public static $_widgetPossibility = array();
    */
 
-      public static function cron() {
+      public static function cron5() {
          foreach (self::byType('pi0ulailler') as $chickencoop) {//parcours tous les équipements du plugin vdm
             if ($chickencoop->getIsEnable() == 1) {//vérifie que l'équipement est actif
                $cmd = $chickencoop->getCmd(null, 'refresh');//retourne la commande "refresh si elle exxiste
@@ -177,7 +177,7 @@ class pi0ulailler extends eqLogic
       $info->setType($type);
       $info->setSubType($subtype);
       if($addMsg) {
-         $info->setDisplay('title_placeholder', __('Options', __FILE__));
+         // $info->setDisplay('title_placeholder', __('Options', __FILE__));
 			$info->setDisplay('message_placeholder', __('Message', __FILE__));
       }
       $info->save();
