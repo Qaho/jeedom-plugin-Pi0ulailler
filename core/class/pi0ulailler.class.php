@@ -30,50 +30,17 @@ class pi0ulailler extends eqLogic
 	public static $_widgetPossibility = array();
    */
 
-   /*     * ***********************Methode static*************************** */
-
-   /*
-     * Fonction exécutée automatiquement toutes les minutes par Jeedom
       public static function cron() {
+         foreach (self::byType('pi0ulailler') as $chickencoop) {//parcours tous les équipements du plugin vdm
+            if ($chickencoop->getIsEnable() == 1) {//vérifie que l'équipement est actif
+               $cmd = $chickencoop->getCmd(null, 'refresh');//retourne la commande "refresh si elle exxiste
+               if (!is_object($cmd)) {//Si la commande n'existe pas
+                  continue; //continue la boucle
+               }
+               $cmd->execCmd(); // la commande existe on la lance
+            }
+         }
       }
-     */
-
-   /*
-     * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
-      public static function cron5() {
-      }
-     */
-
-   /*
-     * Fonction exécutée automatiquement toutes les 10 minutes par Jeedom
-      public static function cron10() {
-      }
-     */
-
-   /*
-     * Fonction exécutée automatiquement toutes les 15 minutes par Jeedom
-      public static function cron15() {
-      }
-     */
-
-   /*
-     * Fonction exécutée automatiquement toutes les 30 minutes par Jeedom
-      public static function cron30() {
-      }
-     */
-
-   /*
-     * Fonction exécutée automatiquement toutes les heures par Jeedom
-      public static function cronHourly() {
-      }
-     */
-
-   /*
-     * Fonction exécutée automatiquement tous les jours par Jeedom
-      public static function cronDaily() {
-      }
-     */
-
 
 
    /*     * *********************Méthodes d'instance************************* */
