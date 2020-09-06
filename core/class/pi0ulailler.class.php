@@ -18,6 +18,7 @@
 
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
+require_once __DIR__  . '/../../../../data/php/user.function.class.php';
 
 class pi0ulailler extends eqLogic
 {
@@ -113,9 +114,9 @@ class pi0ulailler extends eqLogic
 
       // chickencoop
       $this->createCommand('openingTime', 'Heure ouverture', 'info', 'string'); // opening time
-      $this->createCommand('setOpeningTime', 'Changer heure ouverture', 'action', 'other'); // set opening time
+      $this->createCommand('setOpeningTime', 'Changer heure ouverture', 'action', 'message'); // set opening time
       $this->createCommand('closingTime', 'Heure fermeture', 'info', 'string'); // closing time
-      $this->createCommand('setClosingTime', 'Changer heure fermeture', 'action', 'other'); // set closing time
+      $this->createCommand('setClosingTime', 'Changer heure fermeture', 'action', 'message'); // set closing time
    }
 
    // Fonction exécutée automatiquement avant la suppression de l'équipement 
@@ -197,7 +198,7 @@ class pi0ulailler extends eqLogic
       $this->createCommand('door_' . $door->id . '_stop', 'Arreter ' . strtolower($door->name), 'action', 'other'); // stop
    }
 
-   private function createCommand($id, $name, $type, $subtype)
+   private function createCommand($id, $name, $type, $subtype, $addMsg = false)
    {
       $info = $this->getCmd(null, $id);
       if (!is_object($info)) {
@@ -208,6 +209,10 @@ class pi0ulailler extends eqLogic
       $info->setEqLogic_id($this->getId());
       $info->setType($type);
       $info->setSubType($subtype);
+      if($addMsg) {
+         $info->setDisplay('title_placeholder', __('Options', __FILE__));
+			$info->setDisplay('message_placeholder', __('Message', __FILE__));
+      }
       $info->save();
    }
 
@@ -254,7 +259,7 @@ class pi0ulailler extends eqLogic
       return json_decode($return);
    }
 
-   public function sendPostRequest($category, $cmd, $data = null)
+   public function sendPostRequest($category, $cmd, $data = null, $needResponse = false)
    {
       $data = json_encode($data);
       log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . $category . ' - ' . $cmd. ' with data ' . $data);
@@ -268,16 +273,17 @@ class pi0ulailler extends eqLogic
       if ($result === FALSE) {
          log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - Response error on cmd: ' . $cmd . ' with data ' . $data);
       } else {
-         $result = json_decode(stripslashes($result));
-
-         if ($result->status == "OK") {
-            log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . json_encode($result));
-            $result = $result->data;
-            log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Data: ' . json_encode($result));
-         }
-         else {
-            log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Error on command ' . $cmd . ' with data ' . $data . ' - Result: ' . $result);
-            $result = null;
+         if($needResponse) {
+            $result = json_decode(stripslashes($result));
+            if ($result->status == "OK") {
+               log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Result: ' . json_encode($result));
+               $result = $result->data;
+               log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Data: ' . json_encode($result));
+            }
+            else {
+               log::add('pi0ulailler', 'error', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Error on command ' . $cmd . ' with data ' . $data . ' - Result: ' . $result);
+               $result = null;
+            }
          }
       }
 
@@ -287,16 +293,14 @@ class pi0ulailler extends eqLogic
 
 class pi0ulaillerCmd extends cmd
 {
-   /*     * *************************Attributs****************************** */
-
-   /*
-      public static $_widgetPossibility = array();
-    */
-
-   /*     * ***********************Methode static*************************** */
-
-   /*     * *********************Methode d'instance************************* */
-
+   public function preSave() {
+      if ($this->getSubtype() == 'message') {
+          $this->setDisplay('title_disable', 0);
+          $this->setDisplay('message_disable', 0);
+          //$this->setDisplay('title_placeholder', __('Options', __FILE__));
+       //$this->setDisplay('message_placeholder', __('Message', __FILE__));
+      }
+  }
    /*
      * Non obligatoire permet de demander de ne pas supprimer les commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
       public function dontRemoveCmd() {
@@ -323,16 +327,18 @@ class pi0ulaillerCmd extends cmd
             break;
          case 'setOpeningTime':
 
-            $time = $eqlogic->getConfiguration('cmdTime');
+            $time = $_options['message']; 
+            $time = userFunction::userGetTimeFromJeedomString($time);
+            log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Time is: "' . $time . '"');
 
-            if(preg_match('#^[01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$#', $time))
+            if(preg_match('#^([01][0-9])|(2[0-4])(:[0-5][0-9]){1,2}$#', $time))
             {
                $data = (object) [
                   'id' => 'openingTime',
                   'value' => $time
                ];
 
-               $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
+               $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data, true);
                $eqlogic->updateChickenData($result);
             }
             else {
@@ -341,16 +347,18 @@ class pi0ulaillerCmd extends cmd
             break;
          case 'setClosingTime':
             
-            $time = $eqlogic->getConfiguration('cmdTime');
+            $time = $_options['message']; 
+            $time = userFunction::userGetTimeFromJeedomString($time);
+            log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Time is: "' . $time . '"');
 
-            if(preg_match('#^[01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$#', $time))
+            if(preg_match('#^([01][0-9])|(2[0-4])(:[0-5][0-9]){1,2}$#', $time))
             {
                $data = (object) [
                   'id' => 'closingTime',
                   'value' => $time
                ];
 
-               $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data);
+               $result = $eqlogic->sendPostRequest('chicken', 'postjson', $data, true);
                $eqlogic->updateChickenData($result);
             }
             else {
