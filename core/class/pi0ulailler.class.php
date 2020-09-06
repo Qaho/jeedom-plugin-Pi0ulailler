@@ -141,7 +141,9 @@ class pi0ulailler extends eqLogic
       if ($data) {
          log::add('pi0ulailler', 'debug', '(' . __LINE__ . ') ' . __FUNCTION__ . ' - ' . 'Update chicken data: ' . json_encode($data));
          $this->checkAndUpdateCmd('openingTime', $data->openingTime);
+         $this->checkAndUpdateCmd('setOpeningTime', $data->openingTime);
          $this->checkAndUpdateCmd('closingTime', $data->closingTime);
+         $this->checkAndUpdateCmd('setClosingTime', $data->closingTime);
 
          foreach ($data->doors as $door) {
 
@@ -178,7 +180,7 @@ class pi0ulailler extends eqLogic
       $info->setSubType($subtype);
       if($addMsg) {
          // $info->setDisplay('title_placeholder', __('Options', __FILE__));
-			$info->setDisplay('message_placeholder', __('Message', __FILE__));
+			$info->setDisplay('message_placeholder', __('Heure (format: "12:34")', __FILE__));
       }
       $info->save();
    }
@@ -262,10 +264,9 @@ class pi0ulaillerCmd extends cmd
 {
    public function preSave() {
       if ($this->getSubtype() == 'message') {
-          $this->setDisplay('title_disable', 0);
+          $this->setDisplay('title_disable', 1);
           $this->setDisplay('message_disable', 0);
-          //$this->setDisplay('title_placeholder', __('Options', __FILE__));
-       //$this->setDisplay('message_placeholder', __('Message', __FILE__));
+          $this->setDisplay('message_placeholder', 'Heure (format: 12:34)');
       }
   }
    /*
